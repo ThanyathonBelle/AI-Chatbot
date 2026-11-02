@@ -1,0 +1,17 @@
+# Optional add-on: run a dedicated Ollama container alongside KubeChat.
+# Use: docker compose -f docker-compose.yml -f docker-compose.with-ollama.yml up -d --build
+# For NVIDIA GPU acceleration, add `gpus: all` under the ollama service and install NVIDIA Container Toolkit.
+services:
+  kubechat:
+    environment:
+      OLLAMA_BASE_URL: http://ollama:11434
+    depends_on:
+      - ollama
+  ollama:
+    image: ollama/ollama:latest
+    restart: unless-stopped
+    volumes:
+      - ollama_models:/root/.ollama
+    # Ollama is reachable only over the private Compose network by default.
+volumes:
+  ollama_models:

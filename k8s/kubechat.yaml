@@ -1,0 +1,96 @@
+# Optional Kubernetes example. Replace the image with a container registry URL you own.
+# Uses the existing chatbot namespace; adjust the Ollama Service DNS to your cluster.
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: kubechat-data
+  namespace: chatbot
+spec:
+  accessModes: [ReadWriteOnce]
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kubechat
+  namespace: chatbot
+spec:
+  replicas: 1 # SQLite on a single PVC; do not scale replicas without changing storage backend
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: kubechat
+  template:
+    metadata:
+      labels:
+        app: kubechat
+    spec:
+      securityContext:
+        fsGroup: 999
+      containers:
+        - name: kubechat
+          image: YOUR_REGISTRY/kubechat:1.0.0 # CHANGE THIS before kubectl apply
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+              name: http
+          env:
+            - name: DATABASE_PATH
+              value: /app/data/kubechat.sqlite3
+            - name: OLLAMA_BASE_URL
+              value: http://ollama.chatbot.svc.cluster.local:11434 # CHANGE if Service is different
+            - name: OLLAMA_MODELS
+              value: qwen3:8b
+          envFrom:
+            - secretRef:
+                name: kubechat-secrets
+                optional: true
+          volumeMounts:
+            - mountPath: /app/data
+              name: history
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 3
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 20
+          securityContext:
+            allowPrivilegeEscalation: false
+            runAsNonRoot: true
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: [ALL]
+      volumes:
+        - name: history
+          persistentVolumeClaim:
+            claimName: kubechat-data
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kubechat
+  namespace: chatbot
+spec:
+  selector:
+    app: kubechat
+  type: ClusterIP
+  ports:
+    - name: http
+      port: 8080
+      targetPort: 8080

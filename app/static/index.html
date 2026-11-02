@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f9fafb">
+  <meta name="description" content="KubeChat — one beautiful workspace for local and cloud AI models.">
+  <title>KubeChat — Local & Cloud AI</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar" aria-label="Sidebar">
+      <div class="sidebar-top">
+        <a href="/" class="brand" id="brandHome" aria-label="KubeChat home">
+          <span class="brand-mark"><svg width="23" height="23" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2 15.4 8.6 22 12l-6.6 3.4L12 22l-3.4-6.6L2 12l6.6-3.4L12 2Z" fill="currentColor"/><path d="M12 8.2 13.3 10.7 15.8 12l-2.5 1.3L12 15.8l-1.3-2.5L8.2 12l2.5-1.3L12 8.2Z" fill="#b6f5e8"/></svg></span>
+          <span>Kube<span class="brand-italic">Chat</span><small>AI WORKSPACE</small></span>
+        </a>
+        <button class="new-chat-btn" id="newChat"><span class="icon" data-icon="plus"></span><span>New conversation</span><span class="shortcut">⌘ K</span></button>
+        <label class="sidebar-search"><span class="icon" data-icon="search"></span><input id="searchChats" placeholder="Search conversations" autocomplete="off" aria-label="Search conversations"><span class="search-key">/</span></label>
+      </div>
+      <div class="sidebar-section-head"><span>YOUR CONVERSATIONS</span><span id="chatCount">0</span></div>
+      <div class="history-list" id="historyList"><div class="history-loading">Loading conversations…</div></div>
+      <div class="sidebar-bottom">
+        <div class="workspace-card">
+          <div class="workspace-icon"><span class="icon" data-icon="boxes"></span></div>
+          <div><strong>One space. Every model.</strong><p>Local privacy, cloud power.</p></div>
+        </div>
+        <button class="sidebar-settings" id="sidebarSettings"><span class="icon" data-icon="settings"></span><span>Settings & connections</span><span class="icon smaller" data-icon="arrow-up-right"></span></button>
+        <div class="sidebar-foot"><span class="foot-status"><i></i> Local-first by design</span><span>v1.0</span></div>
+      </div>
+    </aside>
+    <div class="sidebar-scrim" id="sidebarScrim"></div>
+    <main class="main-column">
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="icon-button menu-toggle" id="menuToggle" title="Open menu" aria-label="Open menu"><span class="icon" data-icon="menu"></span></button>
+          <div class="topbar-brand">KubeChat <span class="topbar-brand-label">/ Playground</span></div>
+        </div>
+        <div class="topbar-right">
+          <div class="connection-tag" id="connectionTag"><span class="dot"></span><span id="connectionLabel">Connecting</span></div>
+          <button class="icon-button" id="exportBtn" title="Export chat as Markdown" aria-label="Export chat"><span class="icon" data-icon="download"></span></button>
+          <button class="icon-button" id="themeBtn" title="Toggle dark mode" aria-label="Toggle dark mode"><span class="icon" data-icon="moon"></span></button>
+          <button class="icon-button" id="settingsBtn" title="Settings" aria-label="Settings"><span class="icon" data-icon="sliders"></span></button>
+        </div>
+      </header>
+      <div class="modelbar">
+        <div class="model-control-group">
+          <div class="model-select-wrap"><span class="model-select-label">PROVIDER</span><div class="select-container"><span class="icon provider-icon" data-icon="layers"></span><select id="providerSelect" aria-label="AI provider"></select><span class="icon caret" data-icon="chevron-down"></span></div></div>
+          <span class="model-control-divider"></span>
+          <div class="model-select-wrap model-box"><span class="model-select-label">MODEL</span><div class="select-container"><span class="icon model-spark" data-icon="sparkles"></span><select id="modelSelect" aria-label="AI model"></select><span class="icon caret" data-icon="chevron-down"></span></div></div>
+        </div>
+        <div class="modelbar-right"><span id="typeBadge" class="type-badge local">LOCAL</span><button class="icon-button info-btn" id="modelInfoBtn" title="Provider details" aria-label="Provider details"><span class="icon" data-icon="info"></span></button></div>
+      </div>
+      <div class="custom-model" id="customModelWrap" hidden><span>Model ID</span><input id="customModelInput" placeholder="Enter model ID, e.g. Qwen/Qwen3-8B" autocomplete="off"></div>
+      <div class="chat-scroller" id="chatScroller">
+        <div class="welcome" id="welcome">
+          <div class="welcome-emblem"><div class="emblem-halo halo-a"></div><div class="emblem-halo halo-b"></div><div class="emblem-center"><svg viewBox="0 0 80 80" fill="none" aria-hidden="true"><path d="M40 7 50.4 29.6 73 40 50.4 50.4 40 73 29.6 50.4 7 40 29.6 29.6 40 7Z" fill="currentColor"/><path d="M40 28 45.1 34.9 52 40l-6.9 5.1L40 52l-5.1-6.9L28 40l6.9-5.1L40 28Z" fill="white" opacity=".8"/></svg></div></div>
+          <div class="welcome-eyebrow"><span></span> YOUR INTELLIGENCE, UNIFIED <span></span></div>
+          <h1>Think bigger.<br><span>Chat without limits.</span></h1>
+          <p class="welcome-description">One beautiful space for your favorite AI models. Switch seamlessly between private local intelligence and powerful cloud models.</p>
+          <div class="welcome-pills"><span><span class="icon" data-icon="hard-drive"></span> Local AI</span><span class="pill-divider"></span><span><span class="icon" data-icon="cloud"></span> Public AI</span><span class="pill-divider"></span><span><span class="icon" data-icon="zap"></span> Live streaming</span></div>
+          <div class="suggestions-label">GET STARTED WITH A PROMPT <span class="suggestions-line"></span></div>
+          <div class="suggestions-grid">
+            <button class="suggestion" data-prompt="Help me design a scalable Kubernetes architecture for hosting local LLM inference."><span class="suggestion-icon purple"><span class="icon" data-icon="boxes"></span></span><strong>Architect a solution</strong><small>Plan infrastructure and systems</small><span class="suggestion-arrow">↗</span></button>
+            <button class="suggestion" data-prompt="Write a Python FastAPI endpoint with clean error handling, type hints, and unit tests."><span class="suggestion-icon blue"><span class="icon" data-icon="code"></span></span><strong>Build something</strong><small>Code, debug and iterate</small><span class="suggestion-arrow">↗</span></button>
+            <button class="suggestion" data-prompt="Explain the differences between Ollama, vLLM, and hosted LLM APIs in simple terms."><span class="suggestion-icon amber"><span class="icon" data-icon="lightbulb"></span></span><strong>Learn a concept</strong><small>Make complex ideas click</small><span class="suggestion-arrow">↗</span></button>
+            <button class="suggestion" data-prompt="Compare deploying a local Qwen model with OpenAI and Gemini APIs for an enterprise AI chatbot."><span class="suggestion-icon green"><span class="icon" data-icon="git-compare"></span></span><strong>Compare your options</strong><small>Get clarity for decisions</small><span class="suggestion-arrow">↗</span></button>
+          </div>
+        </div>
+        <div class="message-list" id="messageList" hidden></div>
+      </div>
+      <section class="composer-area" aria-label="Message composer">
+        <div class="composer-inner">
+          <div class="composer-topline"><span class="composer-tip"><span class="icon" data-icon="sparkles"></span> Ask anything</span><span class="composer-model" id="composerModel">Choose a model to start</span></div>
+          <div class="composer-box" id="composerBox"><textarea id="promptInput" rows="1" maxlength="30000" placeholder="Message your AI..." aria-label="Message your AI"></textarea><div class="composer-bottom"><div class="composer-left"><span class="no-attachments"><span class="icon" data-icon="lock"></span> Your keys stay on your server</span></div><div class="composer-right"><span class="keyboard-hint">Shift + Enter for newline</span><button class="send-btn" id="sendBtn" title="Send message" aria-label="Send message"><span class="icon" data-icon="arrow-up"></span></button><button class="stop-btn" id="stopBtn" title="Stop generating" aria-label="Stop generating" hidden><span class="icon" data-icon="square"></span></button></div></div></div>
+          <div class="composer-disclaimer">KubeChat can make mistakes. Verify important information. <span>Powered by your models.</span></div>
+        </div>
+      </section>
+    </main>
+  </div>
+  <div class="modal-backdrop" id="settingsBackdrop" hidden>
+    <div class="settings-modal" role="dialog" aria-modal="true" aria-labelledby="settingsHeading">
+      <div class="settings-header"><div><p>WORKSPACE PREFERENCES</p><h2 id="settingsHeading">Settings & connections</h2></div><button class="icon-button" id="closeSettings" aria-label="Close settings"><span class="icon" data-icon="x"></span></button></div>
+      <div class="settings-content">
+        <h3><span class="icon" data-icon="sliders"></span> Model behavior</h3>
+        <label class="setting-label" for="systemPromptInput">System instructions <small>Applied to every new response</small></label>
+        <textarea class="setting-textarea" id="systemPromptInput" rows="3"></textarea>
+        <div class="setting-row"><div><label for="temperatureRange">Creativity / temperature</label><small>Lower for predictable, higher for creative answers</small></div><div class="range-control"><input id="temperatureRange" type="range" min="0" max="2" step="0.1"><output id="tempValue">0.7</output></div></div>
+        <div class="setting-row"><div><label for="maxTokensInput">Max response tokens</label><small>Upper limit, subject to model support</small></div><input class="numeric-setting" id="maxTokensInput" type="number" min="128" max="8192" step="128"></div>
+        <div class="setting-row"><div><label for="thinkToggle">Ollama thinking mode</label><small>For models that support reasoning tokens</small></div><input id="thinkToggle" type="checkbox" class="switch-setting"></div>
+        <div class="settings-divider"></div>
+        <h3><span class="icon" data-icon="network"></span> Provider connections</h3>
+        <p class="settings-hint">Provider addresses and credentials are configured in <code>.env</code> on the server, not in your browser.</p>
+        <div class="settings-providers" id="settingsProviders"></div>
+        <div class="settings-note"><span class="icon" data-icon="shield-check"></span><span>API keys stay server-side. Conversations are stored in your local Docker volume. Public providers still receive messages sent to their models.</span></div>
+      </div>
+      <div class="settings-footer"><button id="saveSettings" class="save-settings">Save preferences <span class="icon" data-icon="check"></span></button></div>
+    </div>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="/app.js" defer></script>
+</body>
+</html>
